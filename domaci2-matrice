@@ -1,0 +1,61 @@
+MODULE Module1
+	CONST robtarget Target_10:=[[0,0,0],[1,0,0,0],[0,-1,-1,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+    CONST num  A4_width  := 210;
+    CONST num  A4_height := 297;
+    CONST num  letter_height := 40;
+    CONST num  letter_width  := 30;
+    CONST num  free_space := 30;
+    CONST num  min_columns_num := 2;
+    CONST num  min_rows_num := 2;
+    
+    VAR   num  i := 0;
+    VAR   num  j := 0;
+    
+    VAR   num  max_columns_num := 0;
+    VAR   num  max_rows_num    := 0;
+    
+    VAR   num  x := free_space;
+    VAR   num  y := free_space;
+    
+PROC Path_10()
+	MoveL Target_10,v1000,z100,tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+PROC number_1(num x, num y)
+    MoveL Offs(Target_10, x+0,  y+letter_height / 3, -10), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10, x+0,  y+letter_height / 3, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10, x+letter_width, y+0, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10, x+letter_width, y+letter_height, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10, x+letter_width, y+letter_height, -10), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+
+PROC number_5(num x, num y)
+   MoveL Offs(Target_10, x+letter_width, y+0, -10), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+letter_width, y+0, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+0,  y+0, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+0,  y+letter_height / 4, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+letter_width / 3, y+letter_height / 4, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveC Offs(Target_10, x+letter_width / 3 + letter_width / 2, y+letter_width / 3 + letter_width / 2, 0), Offs(Target_10,x+letter_width / 3, y+letter_width / 3 + letter_width, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+0,  y+letter_height, 0), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+0,  y+letter_height, -10), v100, z0, tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+PROC main()
+    max_columns_num := (A4_width  - free_space)  / (letter_width  +  free_space);
+    max_rows_num    := (A4_height - free_space)  / (letter_height +  free_space);    
+    
+    FOR i FROM 0 TO max_columns_num-1   DO
+         FOR j  FROM 0 TO max_rows_num-1  DO
+                   !x = free_space + i * (letter_width  + free_space);
+                   !y = free_space + j * (letter_height + free_space);
+                   IF (i + j) MOD 2 = 0 THEN
+                        number_1 x, y;
+                   ELSE
+                        number_5 x, y;
+                   ENDIF
+                   x := x + free_space + letter_width;
+         ENDFOR
+         x := free_space;
+         y := y + free_space + letter_height;
+    ENDFOR
+ENDPROC
+
+ENDMODULE
