@@ -4,7 +4,7 @@ MODULE Module1
     CONST num  A4_height := 297;
     CONST num  letter_height := 40;
     CONST num  letter_width  := 30;
-    CONST num  free_space := 30;
+    CONST num  free_space := 20;
     CONST num  min_columns_num := 2;
     CONST num  min_rows_num := 2;
     
@@ -42,8 +42,8 @@ PROC main()
     max_columns_num := (A4_width  - free_space)  / (letter_width  +  free_space);
     max_rows_num    := (A4_height - free_space)  / (letter_height +  free_space);    
     
-    FOR i FROM 0 TO max_columns_num-1   DO
-         FOR j  FROM 0 TO max_rows_num-1  DO
+    FOR i FROM 0 TO max_rows_num-1   DO
+         FOR j  FROM 0 TO max_columns_num-1  DO
                    !x = free_space + i * (letter_width  + free_space);
                    !y = free_space + j * (letter_height + free_space);
                    IF (i + j) MOD 2 = 0 THEN
