@@ -1,0 +1,147 @@
+MODULE Module1
+	CONST robtarget Target_10:=[[0,0,0],[1,0,0,0],[0,-1,-1,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+    CONST num  free_space := 10;
+    CONST num  A4_width  := 210;
+    CONST num  A4_height := 297;
+    CONST num  letter_height := 40;
+    CONST num  letter_width  := 30;
+ 
+    CONST num  min_columns_num := 2;
+    CONST num  min_rows_num := 2;
+    
+    
+    VAR   num  max_columns_num := 0;
+    VAR   num  max_rows_num    := 0;
+    
+    
+PROC Path_10()
+	MoveL Target_10,v5000,z100,tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+PROC number_1(num x, num y)
+    MoveL Offs(Target_10, x+0,  y+letter_height / 3, -10), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10, x+0,  y+letter_height / 3, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10, x+letter_width, y+0, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10, x+letter_width, y+letter_height, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10, x+letter_width, y+letter_height, -10), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+
+PROC number_5(num x, num y)
+   MoveL Offs(Target_10, x+letter_width, y+0, -10), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+letter_width, y+0, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+0,  y+0, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+0,  y+letter_height / 4, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+letter_width / 3, y+letter_height / 4, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveC Offs(Target_10, x+letter_width / 3 + letter_width / 2, y+letter_width / 3 + letter_width / 2, 0), Offs(Target_10,x+letter_width / 3, y+letter_width / 3 + letter_width, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+0,  y+letter_height, 0), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+   MoveL Offs(Target_10, x+0,  y+letter_height, -10), v500, z0, tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+
+PROC letter_M(num x, num y)
+    MoveJ Offs(Target_10,x+15,y+0,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+15,y+0,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+30,y+0,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+15,y+20,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+25,y+18,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+10,y+40,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+15,y+25,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+0,y+25,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+15,y+0,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+15,y+0,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+
+PROC letter_Z(num x, num y)
+    MoveJ Offs(Target_10,x+0,y+0,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+letter_width,y+0,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+0,y+letter_height,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+letter_width,y+letter_height,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+letter_width,y+letter_height,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+
+PROC letter_N(num x, num y)
+    MoveL Offs(Target_10,x+0,y+0,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+0,y+0,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+0,y+40,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+0,y+40,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+30,y+0,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+30,y+40,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+30,y+0,0),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+    MoveL Offs(Target_10,x+30,y+0,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+PROC space(num x, num y)
+     MoveJ Offs(Target_10,x+0,y+0,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+     MoveJ Offs(Target_10,x+free_space,y+0,-10),v500,z0,tcp_moja_olovka\WObj:=Workobject_2;
+ENDPROC
+
+PROC main()
+    
+    VAR num x;
+    VAR num y;
+    VAR string text;
+    VAR string letter;
+    VAR num i;
+    VAR num tempX;
+    VAR num tempY;
+    VAR num fk1;
+    VAR num fk2;
+    
+    
+    fk2 := 1;
+    WHILE fk2=1 DO
+    
+    TPReadNum x, "Pozicija X:";
+    TPReadNum y, "Pozicija Y:";
+        
+    text := UIAlphaEntry(\Message:="Unesti znakove za stampu.");
+    
+    FOR i FROM 1 TO StrLen(text) DO
+        letter := StrPart(text,i,1);
+        IF(letter = "1") THEN
+            number_1 x,y;
+        ENDIF
+        
+        IF(letter = "5") THEN
+            number_5 x,y;
+        ENDIF
+        
+        IF(letter = "M") THEN
+            letter_M x,y;
+        ENDIF
+        
+        IF(letter = "N") THEN
+            letter_N x,y;
+        ENDIF
+
+        IF(letter = "Z") THEN
+            letter_Z x,y;
+        ENDIF 
+        
+        IF(letter = " ") THEN
+            space x,y;
+        ENDIF
+        
+        IF(letter = "e") THEN
+            x := -letter_width;
+            y := y + free_space + letter_height;
+        ENDIF
+        
+        IF ((x+letter_width) > (A4_width - (free_space + letter_width))) THEN
+            x := free_space;
+            y := y + free_space + letter_height;            
+        ELSE
+            x := x + letter_width + free_space;
+        ENDIF
+        
+        IF ((y) > (A4_height - (free_space + letter_height))) THEN
+            TPReadFk fk1, "Da li zelite da nastavite sa pisanjem?", "DA", "", "", "", "NE";
+            IF (fk1 = 5) THEN
+               Break;
+            ELSE
+                x := free_space;
+                y := free_space;
+            ENDIF            
+        ENDIF
+    ENDFOR
+    TPReadFK fk2, "Da li zelite da unesete novu rec?", "DA", "","","","NE";
+    ENDWHILE
+ENDPROC
+ENDMODULE
