@@ -88,13 +88,21 @@ PROC main()
     fk2 := 1;
     WHILE fk2=1 DO
     
+    
     TPReadNum x, "Pozicija X:";
     TPReadNum y, "Pozicija Y:";
+    
+    IF(x < free_space OR x > A4_width) THEN
+        TPWrite "GRESKA UNOSA!";
+    ELSEIF (y < free_space OR y > A4_height) THEN
+        TPWrite "GRESKA UNOSA!";
+    ELSE
         
     text := UIAlphaEntry(\Message:="Unesti znakove za stampu.");
     
     FOR i FROM 1 TO StrLen(text) DO
         letter := StrPart(text,i,1);
+        
         IF(letter = "1") THEN
             number_1 x,y;
         ENDIF
@@ -142,6 +150,7 @@ PROC main()
         ENDIF
     ENDFOR
     TPReadFK fk2, "Da li zelite da unesete novu rec?", "DA", "","","","NE";
+    ENDIF
     ENDWHILE
 ENDPROC
 ENDMODULE
