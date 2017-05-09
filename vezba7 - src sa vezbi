@@ -1,0 +1,70 @@
+MODULE Module1
+	CONST robtarget Target_10:=[[0,0,0],[0,0,1,0],[0,-1,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+	CONST robtarget Target_20:=[[0,0,0],[0,0,1,0],[-1,0,-1,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+PROC Path_10()
+	MoveJ Target_10,v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_1;
+	MoveJ Target_20,v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_2;
+ENDPROC
+
+PROC test_22()
+    MoveJ Offs(Target_10,50,50,19),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_1;
+    WaitRob \InPos;
+    SetDO DO_10,1; ! zatvori hvataljku!
+    WaitTime 5;
+    
+    MoveJ Offs(Target_20,50,50,19),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_2;
+    WaitRob \InPos;
+    SetDO DO_10,0;
+    WaitTime 2;
+ENDPROC
+
+PROC podigni_ciglicu(num i)
+    VAR num x;
+    VAR num y;
+    
+    x:=50+50*((i-1)MOD 2);
+    y:=50+100*((i-1)DIV 2);
+    
+    MoveJ Offs(Target_10,x,y,69),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_1;
+    MoveL Offs(Target_10,x,y,19),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_1;
+    WaitRob \InPos;
+    SetDO DO_10,1;
+    WaitTime 5;
+    MoveL Offs(Target_10,x,y,69),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_1;
+    
+ENDPROC
+
+PROC spusti_ciglicu(num i)
+    VAR num x;
+    VAR num y;
+    
+    x:=50+100*((i-1)MOD 2);
+    y:=50+50*((i-1)DIV 2);
+    
+    MoveJ Offs(Target_20,x,y,69),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_2;
+    MoveL Offs(Target_20,x,y,19),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_2;
+    WaitRob \InPos;
+    SetDO DO_10,0;
+    WaitTime 5;
+    MoveL Offs(Target_20,x,y,69),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_2;
+    
+ENDPROC
+
+PROC main()
+    VAR num a;
+    !test_22;
+    FOR a FROM 1 TO 6 DO
+        
+        SetDO DO_10,0;
+        podigni_ciglicu a;
+        
+        spusti_ciglicu a;
+        !MoveJ Offs(Target_20,50,50,19),v1000,fine,hvataljaka_v16_tcp\WObj:=Workobject_2;
+        !WaitRob \InPos;
+        !SetDO DO_10,0;
+        !WaitTime 2;
+    ENDFOR
+    
+ENDPROC
+
+ENDMODULE
