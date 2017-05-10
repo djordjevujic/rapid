@@ -1,0 +1,63 @@
+MODULE Module1
+	CONST robtarget Target_10:=[[0,0,0],[1,0,0,0],[0,-1,-1,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+	CONST robtarget Target_20:=[[0,0,0],[1,0,0,0],[-1,0,-2,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+PROC Path_10()
+	MoveL Target_10,v1000,z100,hvataljka\WObj:=wobj_papir_1;
+	MoveL Target_20,v1000,z100,hvataljka\WObj:=wobj_papir_2;
+ENDPROC
+
+
+PROC podigni(num i)
+
+    VAR num x;
+    VAR num y;
+    VAR num z;
+    
+    x:=145-((i-1) MOD 2)*100;
+    y:=252-(((i-1)DIV 2) MOD 3)*110;
+    z:=-20-((i-1) DIV 6)*20;
+    
+    MoveJ Offs(Target_10,x,y,z-50),v1000,fine,hvataljka\WObj:=wobj_papir_1;
+    WaitRob \InPos;
+    SetDO DO10_1,0;
+    WaitTime 1;
+    MoveL Offs(Target_10,x,y,z),v100,fine,hvataljka\WObj:=wobj_papir_1;
+    WaitRob \InPos;
+    SetDO DO10_1,1; 
+    WaitTime 1;
+    MoveL Offs(Target_10,x,y,z-50),v100,fine,hvataljka\WObj:=wobj_papir_1;
+    
+ENDPROC
+
+
+PROC spusti(num i)
+    VAR num x;
+    VAR num y;
+    VAR num z;
+    
+    x:=145-((i-1) MOD 2)*100;
+    y:=252-(((i-1)DIV 2) MOD 3)*110;
+    z:=-40+((i-1) DIV 6)*20;
+    
+    MoveJ Offs(Target_10,x,y,z-50),v1000,fine,hvataljka\WObj:=wobj_papir_2;
+    MoveL Offs(Target_10,x,y,z),v100,fine,hvataljka\WObj:=wobj_papir_2;
+    WaitRob \InPos;
+    SetDO DO10_1,0; 
+    WaitTime 1;
+    MoveL Offs(Target_10,x,y,z-50),v100,fine,hvataljka\WObj:=wobj_papir_2;
+    
+ENDPROC
+
+PROC main()
+    FOR i FROM 7 TO 12 DO
+        podigni i;
+        spusti i;
+    ENDFOR
+    
+    FOR i FROM 1 TO 6 DO
+        podigni i;
+        spusti i;
+    ENDFOR
+ENDPROC
+
+ENDMODULE
