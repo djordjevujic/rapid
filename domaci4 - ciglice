@@ -54,17 +54,14 @@ PROC spusti_ciglicu1(num x, num y, num z)
     MoveL Offs(Target_20,x,y,z-50),v1000,fine,hvataljka\WObj:=Workobject_2;
     
 ENDPROC
-
-PROC main()
+PROC premesti_nivo()
     VAR num i;
     VAR num j;
     VAR num k;
     VAR num X;
     VAR num Y;
     VAR num z;
-   
-    SetDO DO10_1,0;
-    !Ceo jedan nivo, pa ceo drugi nivo
+    
     FOR k FROM 0 TO 1 DO
         FOR i FROM 0 TO 2 DO
             FOR j FROM 0 TO 1 DO
@@ -80,7 +77,16 @@ PROC main()
             
             ENDFOR
         ENDFOR
-    ENDFOR    
+    ENDFOR 
+ENDPROC
+
+PROC vrati_nivo()
+    VAR num i;
+    VAR num j;
+    VAR num k;
+    VAR num X;
+    VAR num Y;
+    VAR num z;
     
     FOR k FROM 0 TO 1 DO
         FOR i FROM 0 TO 2 DO
@@ -97,8 +103,67 @@ PROC main()
             
             ENDFOR
         ENDFOR
-    ENDFOR   
+    ENDFOR 
+ENDPROC
+
+PROC premesti_kulu()
+    VAR num i;
+    VAR num j;
+    VAR num k;
+    VAR num X;
+    VAR num Y;
+    VAR num z;
     
+    FOR i FROM 0 TO 2 DO
+        FOR j FROM 0 TO 1 DO
+             FOR k FROM 0 TO 1 DO
+                x := 45 + j*100;
+                y := 32 + i*110;
+                
+                z := -40 + k * 20;              
+                podigni_ciglicu x,y,z;
+                
+                z := -40 + ((k + 1) MOD 2) * 20;                
+                spusti_ciglicu x,y,z;
+            
+            ENDFOR
+        ENDFOR
+    ENDFOR 
+ENDPROC
+PROC vrati_kulu()
+    VAR num i;
+    VAR num j;
+    VAR num k;
+    VAR num X;
+    VAR num Y;
+    VAR num z;
+    
+     FOR i FROM 0 TO 2 DO
+        FOR j FROM 0 TO 1 DO
+             FOR k FROM 0 TO 1 DO
+                x := 45 + j*100;
+                y := 32 + i*110;
+                
+                z := -40 + k * 20;              
+                podigni_ciglicu1 x,y,z;
+                
+                z := -40 + ((k + 1) MOD 2) * 20;                
+                spusti_ciglicu1 x,y,z;
+            
+            ENDFOR
+        ENDFOR
+    ENDFOR
+ENDPROC
+
+PROC main()
+   
+    SetDO DO10_1,0;   
+    
+    premesti_kulu;
+    vrati_kulu; 
+    
+    premesti_nivo;
+    vrati_nivo;
     
 ENDPROC
 
