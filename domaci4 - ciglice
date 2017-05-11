@@ -1,6 +1,9 @@
 MODULE Module1
 	CONST robtarget Target_10:=[[0,0,0],[0.707106781,0,0,-0.707106781],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
 	CONST robtarget Target_20:=[[0,0,0],[0.707106781,0,0,-0.707106781],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+    CONST num n_visina := 2;
+    CONST num cigla_visina := 20;
+    CONST num z_init := n_visina * cigla_visina * (-1);
 PROC Path_10()
 	MoveL Target_10,v1000,z100,hvataljka_tcp\WObj:=Workobject_1;
 ENDPROC
@@ -69,10 +72,10 @@ PROC premesti_nivo()
                 x := 45 + j*100;
                 y := 32 + i*110;
                 
-                z := -40 + k * 20;              
+                z := z_init + k * cigla_visina;              
                 podigni_ciglicu x,y,z;
                 
-                z := -40 + ((k + 1) MOD 2) * 20;                
+                z := z_init + ((k + 1) MOD n_visina) * cigla_visina;                
                 spusti_ciglicu x,y,z;
             
             ENDFOR
@@ -95,10 +98,10 @@ PROC vrati_nivo()
                 x := 45 + j*100;
                 y := 32 + i*110;
                 
-                z := -40 + k * 20;              
+                z := z_init + k * cigla_visina;              
                 podigni_ciglicu1 x,y,z;
                 
-                z := -40 + ((k + 1) MOD 2) * 20;                
+                z := z_init + ((k + 1) MOD n_visina) * cigla_visina;                
                 spusti_ciglicu1 x,y,z;
             
             ENDFOR
@@ -116,14 +119,14 @@ PROC premesti_kulu()
     
     FOR i FROM 0 TO 2 DO
         FOR j FROM 0 TO 1 DO
-             FOR k FROM 0 TO 1 DO
+             FOR k FROM 0 TO n_visina-1 DO
                 x := 45 + j*100;
                 y := 32 + i*110;
                 
-                z := -40 + k * 20;              
+                z := z_init + k * cigla_visina;              
                 podigni_ciglicu x,y,z;
                 
-                z := -40 + ((k + 1) MOD 2) * 20;                
+                z := z_init + ((k + 1) MOD n_visina) * cigla_visina;                
                 spusti_ciglicu x,y,z;
             
             ENDFOR
@@ -140,14 +143,14 @@ PROC vrati_kulu()
     
      FOR i FROM 0 TO 2 DO
         FOR j FROM 0 TO 1 DO
-             FOR k FROM 0 TO 1 DO
+             FOR k FROM 0 TO n_visina-1 DO
                 x := 45 + j*100;
                 y := 32 + i*110;
                 
-                z := -40 + k * 20;              
+                z := z_init + k * cigla_visina;              
                 podigni_ciglicu1 x,y,z;
                 
-                z := -40 + ((k + 1) MOD 2) * 20;                
+                z := z_init + ((k + 1) MOD n_visina) * cigla_visina;                
                 spusti_ciglicu1 x,y,z;
             
             ENDFOR
