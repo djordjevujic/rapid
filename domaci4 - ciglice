@@ -4,6 +4,7 @@ MODULE Module1
     CONST num n_visina := 2;
     CONST num cigla_visina := 20;
     CONST num z_init := n_visina * cigla_visina * (-1);
+    
 PROC Path_10()
 	MoveL Target_10,v1000,z100,hvataljka_tcp\WObj:=Workobject_1;
 ENDPROC
@@ -22,7 +23,6 @@ PROC podigni_ciglicu(num x, num y, num z)
     MoveL Offs(Target_20,x,y,z-50),v1000,fine,hvataljka\WObj:=Workobject_2;
     
 ENDPROC
-
 PROC spusti_ciglicu(num x, num y, num z)
  
     MoveJ Offs(Target_10,x,y,z-50),v1000,fine,hvataljka\WObj:=Workobject_1;
@@ -33,7 +33,6 @@ PROC spusti_ciglicu(num x, num y, num z)
     MoveL Offs(Target_10,x,y,z-50),v1000,fine,hvataljka\WObj:=Workobject_1;
     
 ENDPROC
-
 PROC podigni_ciglicu1(num x, num y, num z)
     
     MoveJ Offs(Target_10,x,y,z-50),v1000,fine,hvataljka\WObj:=Workobject_1;
@@ -46,7 +45,6 @@ PROC podigni_ciglicu1(num x, num y, num z)
     MoveL Offs(Target_10,x,y,z-50),v1000,fine,hvataljka\WObj:=Workobject_1;
     
 ENDPROC
-
 PROC spusti_ciglicu1(num x, num y, num z)
  
     MoveJ Offs(Target_20,x,y,z-50),v1000,fine,hvataljka\WObj:=Workobject_2;
@@ -57,6 +55,7 @@ PROC spusti_ciglicu1(num x, num y, num z)
     MoveL Offs(Target_20,x,y,z-50),v1000,fine,hvataljka\WObj:=Workobject_2;
     
 ENDPROC
+
 PROC premesti_nivo()
     VAR num i;
     VAR num j;
@@ -82,7 +81,6 @@ PROC premesti_nivo()
         ENDFOR
     ENDFOR 
 ENDPROC
-
 PROC vrati_nivo()
     VAR num i;
     VAR num j;
@@ -108,7 +106,6 @@ PROC vrati_nivo()
         ENDFOR
     ENDFOR 
 ENDPROC
-
 PROC premesti_kulu()
     VAR num i;
     VAR num j;
@@ -159,14 +156,19 @@ PROC vrati_kulu()
 ENDPROC
 
 PROC main()
+    
+    VAR num fk1;
    
     SetDO DO10_1,0;   
     
-    premesti_kulu;
-    vrati_kulu; 
-    
-    premesti_nivo;
-    vrati_nivo;
+    TPReadFk fk1, "Izaberite rezim:", "Kula po kula", "", "", "", "Nivo po nivo";
+    IF (fk1 = 1) THEN
+        premesti_kulu;
+        vrati_kulu;
+    ELSEIF (fk1 = 5) THEN
+        premesti_nivo;
+        vrati_nivo;
+    ENDIF
     
 ENDPROC
 
