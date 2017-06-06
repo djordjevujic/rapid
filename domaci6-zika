@@ -1,0 +1,120 @@
+ MODULE Module1
+	CONST robtarget Start:=[[610.2146997,0,619.5],[0.5,0,0.866025404,0],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+	CONST robtarget Target_20:=[[444.664508172,417.894071389,619.5],[0.46485236,-0.318962146,0.805147905,0.184152881],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+	CONST robtarget Target_30:=[[646.859598684,607.916274726,486.215627807],[0.463218633,-0.319334937,0.80608893,0.183505674],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+	CONST robtarget Target_40:=[[834.992620097,331.791300094,337.214023392],[0.410601959,-0.170772614,0.892225551,0.078589511],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+	CONST robtarget Target_50:=[[748.172362807,-497.530157847,337.214023392],[0.400187576,0.262742337,0.869595414,-0.120913953],[-1,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+	CONST robtarget Target_60:=[[688.31645704,-457.726337598,628.954501803],[0.535362348,0.239767985,0.793557457,-0.16175609],[-1,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+	CONST robtarget Target_70:=[[758.225788822,-119.120781735,893.301487274],[0.744507043,0.051767543,0.663061627,-0.058126272],[-1,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+  
+    VAR robtarget point:=[[610.2146997,0,619.5],[0.5,0,0.866025404,0],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
+    VAR speeddata mojspeed:=v1000;
+    VAR intnum haltvektor;
+    VAR intnum startVector;
+    VAR intnum speedup;
+    VAR intnum speeddown;
+    VAR intnum blinkvector;
+    VAR intnum dioda1;
+    VAR intnum dioda2;
+    VAR num velocity:=1;
+    VAR num uslov:=1;
+    PROC Path_10()
+	MoveL Start,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_20,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_30,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_40,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_50,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_60,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_70,v1000,z100,Hvacher_1\WObj:=wobj0;
+ENDPROC
+
+TRAP haltTrap
+    StopMove;
+    StorePath;
+    point:=CRobT();
+    MoveL Start,v1000,z100,Hvacher_1\WObj:=wobj0;
+    ISleep blinkvector;     !da ne blinka kad robot stoji
+  ! IF uslov=0 THEN
+   ! WHILE (speedup=0) DO 
+   ! ENDWHILE
+  ! ENDIF
+ENDTRAP
+
+TRAP StartTrap
+    MoveJ point,v1000,z100,Hvacher_1\WObj:=wobj0;
+    RestoPath;
+    StartMove;
+    IWatch blinkvector;   !pali kad se robot startuje
+ENDTRAP
+
+TRAP ubrzavanje
+    velocity:=velocity+1;
+    TEST velocity
+    CASE 1:
+    uslov:=1;
+    SpeedRefresh 25;
+    startVector:=0;
+    CASE 2:
+    SpeedRefresh 50;
+    CASE 3:
+    SpeedRefresh 75;
+    CASE 4:
+    SpeedRefresh 100;
+   ! ITimer 10,speeddown;
+    ENDTEST
+     brzina; 
+ENDTRAP
+
+TRAP usporavanje 
+    velocity:=velocity-1;
+    TEST velocity
+    CASE 1:
+    SpeedRefresh 25;
+     CASE 2:
+    SpeedRefresh 50;
+     CASE 3:
+    SpeedRefresh 75;
+   CASE 0:
+   speedup:=0;
+   uslov:=0;
+   haltvektor:=1;
+    ENDTEST    
+    brzina;
+ENDTRAP
+
+TRAP blink
+    InvertDO DO10_11;
+ENDTRAP
+PROC brzina()
+    TEST velocity
+    CASE 1:
+    SetDO DO10_9,0;
+    SetDO DO10_10,0;   
+    CASE 2:
+    SetDO DO10_9,0;
+    SetDO DO10_10,1;   
+    CASE 3:
+    SetDO DO10_9,1;
+    SetDO DO10_10,0;   
+    CASE 4:
+    SetDO DO10_9,1;
+    SetDO DO10_10,1;   
+    ENDTEST
+ENDPROC
+PROC main()
+    CONNECT haltvektor WITH haltTrap;
+    CONNECT startVector WITH StartTrap;
+    CONNECT speedup WITH ubrzavanje;
+    CONNECT speeddown WITH usporavanje;
+    CONNECT blinkvector WITH blink;
+
+    ISignalDI DI10_11,1,haltvektor;
+    ISignalDI DI10_11,0,startVector;
+    ISignalDI DI10_9,1,speedup;
+    ISignalDI DI10_10,1,speeddown;
+    ITimer 0.5,blinkvector;
+    WHILE TRUE DO 
+        Path_10;
+    ENDWHILE
+ENDPROC
+ENDMODULE
