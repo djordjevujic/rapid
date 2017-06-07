@@ -14,14 +14,12 @@ MODULE Module1
     VAR intnum speedup;
     VAR intnum speeddown;
     VAR intnum blinkvector;
-    VAR intnum dioda1;
-    VAR intnum dioda2;
-    VAR num velocity:=1;
-    VAR num uslov:=1;
-    VAR bool najveca_flag := 0;
-    VAR bool najveca_brojac := 0;
+    VAR intnum velocity_procent := 25;
+    VAR num velocity := 1;
+    VAR bool najveca_flag := FALSE;
+    VAR num najveca_brojac := 0;
     
-    PROC Path_10()
+PROC Path_10()
 	MoveL Start,v1000,z100,Hvacher_1\WObj:=wobj0;
 	MoveL Target_20,v1000,z100,Hvacher_1\WObj:=wobj0;
 	MoveL Target_30,v1000,z100,Hvacher_1\WObj:=wobj0;
@@ -31,16 +29,22 @@ MODULE Module1
 	MoveL Target_70,v1000,z100,Hvacher_1\WObj:=wobj0;
 ENDPROC
 
+PROC Path_20()
+	MoveL Target_60,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_50,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_40,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_30,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_20,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Start,v1000,z100,Hvacher_1\WObj:=wobj0;
+	MoveL Target_70,v1000,z100,Hvacher_1\WObj:=wobj0;
+ENDPROC
+
 TRAP haltTrap
     StopMove;
     StorePath;
     point:=CRobT();
     MoveL Start,v1000,z100,Hvacher_1\WObj:=wobj0;
     ISleep blinkvector;     !da ne blinka kad robot stoji
-  ! IF uslov=0 THEN
-   ! WHILE (speedup=0) DO 
-   ! ENDWHILE
-  ! ENDIF
 ENDTRAP
 
 TRAP StartTrap
@@ -52,37 +56,36 @@ ENDTRAP
 
 TRAP ubrzavanje
     velocity:=velocity+1;
-    TEST velocity
-    CASE 1:
-    uslov:=1;
-    SpeedRefresh 25;
-    startVector:=0;
-    CASE 2:
-    SpeedRefresh 50;
-    CASE 3:
-    SpeedRefresh 75;
-    CASE 4:
-    SpeedRefresh 100;
+    IF velocity > 4 THEN
+        velocity := 4;
+    ENDIF
+    
+    velocity_procent := velocity_procent + 25;
+    IF velocity_procent >= 100 THEN
+        velocity_procent := 100;
         najveca_flag := TRUE;
-    ENDTEST
-     brzina; 
+    ENDIF
+    
+    SpeedRefresh velocity_procent;
+    speedup := 0; !RESET FLAG-a
+    brzina; 
 ENDTRAP
 
 TRAP usporavanje 
     velocity:=velocity-1;
-    TEST velocity
-    CASE 1:
-    SpeedRefresh 25;
-     CASE 2:
-    SpeedRefresh 50;
-     CASE 3:
-    SpeedRefresh 75;
-    CASE 0:
-    speedup:=0;
-    uslov:=0;
-    haltvektor:=1;
-    ENDTEST    
-    brzina;
+    
+    IF velocity < 0 THEN
+        velocity := 0;
+    ENDIF
+    
+    velocity_procent := velocity_procent - 25;
+    IF velocity_procent < 0 THEN
+        velocity_procent := 0;
+    ENDIF
+    
+    SpeedRefresh velocity_procent;
+    speeddown := 0; !RESET FLAG-a
+    brzina; 
 ENDTRAP
 
 TRAP blink
@@ -95,7 +98,8 @@ TRAP blink
         velocity := velocity - 1;
         SpeedRefresh 75;
         najveca_brojac := 0;
-        najveca_flag := 0;
+        najveca_flag := FALSE;
+        brzina;
     ENDIF
     
 ENDTRAP
@@ -127,8 +131,17 @@ PROC main()
     ISignalDI DI10_9,1,speedup;
     ISignalDI DI10_10,1,speeddown;
     ITimer 0.5,blinkvector;
+    
+    SpeedRefresh velocity_procent;
+    
     WHILE TRUE DO 
-        Path_10;
+        IF DI10_12 = 1 THEN
+            Path_10;
+        ELSE 
+            Path_20;
+        ENDIF
     ENDWHILE
 ENDPROC
+
+
 ENDMODULE
