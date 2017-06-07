@@ -8,16 +8,15 @@ MODULE Module1
 	CONST robtarget Target_70:=[[758.225788822,-119.120781735,893.301487274],[0.744507043,0.051767543,0.663061627,-0.058126272],[-1,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
   
     VAR robtarget point:=[[610.2146997,0,619.5],[0.5,0,0.866025404,0],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
-    VAR speeddata mojspeed:=v1000;
-    VAR intnum haltvektor;
+    VAR intnum forceStopVect;
     VAR intnum startVector;
-    VAR intnum speedup;
-    VAR intnum speeddown;
-    VAR intnum blinkvector;
+    VAR intnum speedUpVect;
+    VAR intnum speedDownVect;
+    VAR intnum blinkVector;
     VAR intnum velocity_procent := 25;
     VAR num velocity := 1;
-    VAR bool najveca_flag := FALSE;
-    VAR num najveca_brojac := 0;
+    VAR bool fastest_flag := FALSE;
+    VAR num fastest_counter := 0;
     
 PROC Path_10()
 	MoveL Start,v1000,z100,Hvacher_1\WObj:=wobj0;
@@ -39,22 +38,22 @@ PROC Path_20()
 	MoveL Target_70,v1000,z100,Hvacher_1\WObj:=wobj0;
 ENDPROC
 
-TRAP haltTrap
+TRAP forceStopTrap
     StopMove;
     StorePath;
-    point:=CRobT();
+    point := CRobT();
     MoveL Start,v1000,z100,Hvacher_1\WObj:=wobj0;
-    ISleep blinkvector;     !da ne blinka kad robot stoji
+    ISleep blinkVector;     !iskljuciti blink
 ENDTRAP
 
 TRAP StartTrap
     MoveJ point,v1000,z100,Hvacher_1\WObj:=wobj0;
     RestoPath;
     StartMove;
-    IWatch blinkvector;   !pali kad se robot startuje
+    IWatch blinkVector;   !pali kad se robot startuje
 ENDTRAP
 
-TRAP ubrzavanje
+TRAP speedUpTrap
     velocity:=velocity+1;
     IF velocity > 4 THEN
         velocity := 4;
@@ -63,15 +62,15 @@ TRAP ubrzavanje
     velocity_procent := velocity_procent + 25;
     IF velocity_procent >= 100 THEN
         velocity_procent := 100;
-        najveca_flag := TRUE;
+        fastest_flag := TRUE;
     ENDIF
     
     SpeedRefresh velocity_procent;
-    speedup := 0; !RESET FLAG-a
-    brzina; 
+    speedUpVect := 0; !RESET FLAG-a
+    velocity_disp; 
 ENDTRAP
 
-TRAP usporavanje 
+TRAP slowDownTrap 
     velocity:=velocity-1;
     
     IF velocity < 0 THEN
@@ -84,26 +83,26 @@ TRAP usporavanje
     ENDIF
     
     SpeedRefresh velocity_procent;
-    speeddown := 0; !RESET FLAG-a
-    brzina; 
+    speedDownVect := 0; !RESET FLAG-a
+    velocity_disp; 
 ENDTRAP
 
 TRAP blink
     InvertDO DO10_11;
     
-    IF najveca_flag = TRUE THEN
-        najveca_brojac := najveca_brojac + 1;
+    IF fastest_flag = TRUE THEN
+        fastest_counter := fastest_counter + 1;
     ENDIF
-    IF najveca_brojac = 20 THEN
+    IF fastest_counter = 20 THEN
         velocity := velocity - 1;
         SpeedRefresh 75;
-        najveca_brojac := 0;
-        najveca_flag := FALSE;
-        brzina;
+        fastest_counter := 0;
+        fastest_flag := FALSE;
+        velocity_disp;
     ENDIF
     
 ENDTRAP
-PROC brzina()
+PROC velocity_disp()
     TEST velocity
     CASE 1:
     SetDO DO10_9,0;
@@ -120,19 +119,20 @@ PROC brzina()
     ENDTEST
 ENDPROC
 PROC main()
-    CONNECT haltvektor WITH haltTrap;
+    CONNECT forceStopVect WITH forceStopTrap;
     CONNECT startVector WITH StartTrap;
-    CONNECT speedup WITH ubrzavanje;
-    CONNECT speeddown WITH usporavanje;
-    CONNECT blinkvector WITH blink;
+    CONNECT speedUpVect WITH speedUpTrap;
+    CONNECT speedDownVect WITH slowDownTrap;
+    CONNECT blinkVector WITH blink;
 
-    ISignalDI DI10_11,1,haltvektor;
+    ISignalDI DI10_11,1,forceStopVect;
     ISignalDI DI10_11,0,startVector;
-    ISignalDI DI10_9,1,speedup;
-    ISignalDI DI10_10,1,speeddown;
-    ITimer 0.5,blinkvector;
+    ISignalDI DI10_9,1,speedUpVect;
+    ISignalDI DI10_10,1,speedDownVect;
+    ITimer 0.5,blinkVector;
     
     SpeedRefresh velocity_procent;
+    velocity_disp;
     
     WHILE TRUE DO 
         IF DI10_12 = 1 THEN
@@ -142,6 +142,5 @@ PROC main()
         ENDIF
     ENDWHILE
 ENDPROC
-
 
 ENDMODULE
