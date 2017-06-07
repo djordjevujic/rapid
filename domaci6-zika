@@ -1,4 +1,4 @@
- MODULE Module1
+MODULE Module1
 	CONST robtarget Start:=[[610.2146997,0,619.5],[0.5,0,0.866025404,0],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
 	CONST robtarget Target_20:=[[444.664508172,417.894071389,619.5],[0.46485236,-0.318962146,0.805147905,0.184152881],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
 	CONST robtarget Target_30:=[[646.859598684,607.916274726,486.215627807],[0.463218633,-0.319334937,0.80608893,0.183505674],[0,0,0,0],[9E9,9E9,9E9,9E9,9E9,9E9]];
@@ -18,6 +18,9 @@
     VAR intnum dioda2;
     VAR num velocity:=1;
     VAR num uslov:=1;
+    VAR bool najveca_flag := 0;
+    VAR bool najveca_brojac := 0;
+    
     PROC Path_10()
 	MoveL Start,v1000,z100,Hvacher_1\WObj:=wobj0;
 	MoveL Target_20,v1000,z100,Hvacher_1\WObj:=wobj0;
@@ -60,7 +63,7 @@ TRAP ubrzavanje
     SpeedRefresh 75;
     CASE 4:
     SpeedRefresh 100;
-   ! ITimer 10,speeddown;
+        najveca_flag := TRUE;
     ENDTEST
      brzina; 
 ENDTRAP
@@ -74,16 +77,27 @@ TRAP usporavanje
     SpeedRefresh 50;
      CASE 3:
     SpeedRefresh 75;
-   CASE 0:
-   speedup:=0;
-   uslov:=0;
-   haltvektor:=1;
+    CASE 0:
+    speedup:=0;
+    uslov:=0;
+    haltvektor:=1;
     ENDTEST    
     brzina;
 ENDTRAP
 
 TRAP blink
     InvertDO DO10_11;
+    
+    IF najveca_flag = TRUE THEN
+        najveca_brojac := najveca_brojac + 1;
+    ENDIF
+    IF najveca_brojac = 20 THEN
+        velocity := velocity - 1;
+        SpeedRefresh 75;
+        najveca_brojac := 0;
+        najveca_flag := 0;
+    ENDIF
+    
 ENDTRAP
 PROC brzina()
     TEST velocity
